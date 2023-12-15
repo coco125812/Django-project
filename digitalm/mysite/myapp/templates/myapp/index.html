@@ -1,0 +1,36 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+<div class="product-container flex">
+{% for product in products  %}
+    <div class="product shadow-lg w-1/4 rounded-lg m-10">
+       <div class="product-image">
+           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="">
+       </div>
+       <div class="p-5">
+           <div class="font-bold">
+               {{product.name}}
+           </div>  
+           <div>
+               {{product.description}}
+           </div> 
+           <div>
+               Created by:{{product.seller}}
+        </div> 
+           <div class="text-green-700 font-bold">
+               ${{product.price}}
+           </div>
+           <div class="mt-5">
+               <a class="bg-green-500 text-white px-4 py-2" href="{% url 'detail' product.id  %}">View Details</a>
+           </div>
+       </div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock  %}
+
+
+
+
+
+     

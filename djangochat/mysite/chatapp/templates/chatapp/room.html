@@ -1,0 +1,75 @@
+{%extends 'chatapp/base.html'%}
+{%block body%}
+<div class="m-10 font-bold">
+{{chatroom.name}}
+</div>
+
+<div id="chat-messages">
+    {% for message in messages%}
+    <div  class="message shadow-lg p-3 rounded-lg w-1/2 bg-blue-300">
+        <div class="text-sm text-gray-500">
+            {{message.user.username}} 
+        </div>
+            {{message.message_content}}
+        <div class="text-sm text-gray-500">
+            {{message.date}}
+        </div>    
+    </div>    
+      
+    {%endfor%}
+</div>
+
+<div class="form-container fixed inset-x-0 bottom-0 bg-blue-900 p-4">
+    <form method="post">
+        {% csrf_token %}
+        <input class="rounded-md px-2" id="message-input" type="text" name="message" placeholder="Enter message">
+        <button class="text-white ml-5" id="send-button" type="submit">Send</button>
+    </form>
+    
+
+</div>
+
+{{chatroom.slug |json_script:"json-chatroomname"}}
+{{request.user.username |json_script:"json-username"}}
+<script>
+    const chatRoomName =JSON.parse(document.getElementById('json-chatroomname').textContent)
+    const username = JSON.parse(document.getElementById('json-username').textContent)
+    const chatSocket = new WebSocket(
+        'ws://'
+        +window.location.host
+        +'/ws/'
+        +chatRoomName
+        +'/'
+    )
+    chatSocket.onmessage=function(e){
+       // console.log('this is a message')
+       const data=JSON.parse(e.data)
+       if(data.message){
+        console.log('Recieved message to client is', data.message)
+        let html =  data.username + ' : ' + data.message + '</br>'
+        document.getElementById('chat-messages').innerHTML +=html
+        
+       }else{
+        alert('This message was empty')
+       }
+    }
+    chatSocket.onclose =function(e){
+        console.log('Socket closed')
+    }
+
+    document.getElementById('send-button').onclick =function(e){
+        e=preventDefault()
+        const messageInput=document.getElementById('message-input')
+        const message = messageInput.value
+        console.log(message)
+      
+
+        chatSocket.send(JSON.stringify({
+            'message':message,
+            'username': username,
+            'room' : chatRoomName
+        }))
+        messageInput.value=""
+    }  
+</script>
+{%endblock%}

@@ -1,0 +1,33 @@
+{% extends 'myapp/base.html' %}
+{% block body  %}
+<div class="w-1/2 m-20">
+    <h1 class="font-bold text-lg">Edit Products </h1>
+    <form class="shadow-lg p-10" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label>Name</label>
+            <div class="border rounded apperance-none py-2 px-2 mr-10">{{product_form.name}}</div>
+        </div>
+        <div>
+            <label>Description</label>
+            <div class="border rounded apperance-none py-2 px-2 mr-10">{{product_form.description}}</div>
+        </div>
+        <div>
+            <label>Price</label>
+            <div class="border rounded apperance-none py-2 px-2 mr-10">{{product_form.price}}</div>
+        </div>
+        <div>
+            <label>Upload File</label>
+            <div class=" rounded apperance-none py-2 px-2 mr-10">{{product_form.file}}</div>
+        </div>
+        <div class="mt-6">
+            <button class="bg-green-500 text-white px-4 py-2" type="submit">Update</button>
+        </div>
+       
+    </form> 
+</div>
+<div class="m-20">
+    <a class="bg-red-500 text-white px-6 py-3" href="{% url 'delete' product.id %}">Delete </a>
+</div>
+
+{%endblock%}   
